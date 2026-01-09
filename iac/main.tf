@@ -31,6 +31,8 @@ resource "azurerm_postgresql_flexible_server" "main" {
   backup_retention_days        = 7
   geo_redundant_backup_enabled = false
 
+  zone = "1"
+
   tags = azurerm_resource_group.main.tags
 }
 
