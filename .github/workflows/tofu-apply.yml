@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'iac/**'
+      - '.github/workflows/tofu-apply.yml'
   workflow_dispatch:
 
 env:
@@ -26,6 +27,11 @@ jobs:
       uses: opentofu/setup-opentofu@v1
       with:
         tofu_version: ${{ env.TF_VERSION }}
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Tofu Init
       working-directory: ${{ env.WORKING_DIR }}
