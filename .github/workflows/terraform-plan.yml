@@ -16,7 +16,8 @@ jobs:
   tofu-plan:
     name: 'Tofu Plan'
     runs-on: ubuntu-latest
-    
+    permissions:
+      pull-requests: write
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
