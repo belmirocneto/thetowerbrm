@@ -3,7 +3,7 @@
 
 project_name = "battle-reports"
 environment  = "prod"
-location     = "East US"
+location     = "Central US"
 
 # Database credentials
 db_admin_username = "adminuser"
