@@ -21,9 +21,9 @@ resource "azurerm_postgresql_flexible_server" "main" {
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
 
-  version                      = "14"
-  administrator_login          = var.db_admin_username
-  administrator_password       = var.db_admin_password
+  version                = "14"
+  administrator_login    = var.db_admin_username
+  administrator_password = var.db_admin_password
 
   sku_name   = "B_Standard_B1ms"
   storage_mb = 32768
@@ -68,7 +68,7 @@ resource "azurerm_service_plan" "functions" {
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
   os_type             = "Linux"
-  sku_name            = "Y1"  # Consumption plan (Free tier)
+  sku_name            = "Y1" # Consumption plan (Free tier)
 
   tags = azurerm_resource_group.main.tags
 }
@@ -97,11 +97,11 @@ resource "azurerm_linux_function_app" "backend" {
   }
 
   app_settings = {
-    "FUNCTIONS_WORKER_RUNTIME"       = "python"
-    "DATABASE_URL"                   = "postgresql://${var.db_admin_username}:${var.db_admin_password}@${azurerm_postgresql_flexible_server.main.fqdn}:5432/${azurerm_postgresql_flexible_server_database.main.name}?sslmode=require"
-    "API_KEY"                        = var.api_key
-    "FRONTEND_URL"                   = "https://${azurerm_static_web_app.frontend.default_host_name}"
-    "AZURE_FUNCTIONS_ENVIRONMENT"    = "Production"
+    "FUNCTIONS_WORKER_RUNTIME"    = "python"
+    "DATABASE_URL"                = "postgresql://${var.db_admin_username}:${var.db_admin_password}@${azurerm_postgresql_flexible_server.main.fqdn}:5432/${azurerm_postgresql_flexible_server_database.main.name}?sslmode=require"
+    "API_KEY"                     = var.api_key
+    "FRONTEND_URL"                = "https://${azurerm_static_web_app.frontend.default_host_name}"
+    "AZURE_FUNCTIONS_ENVIRONMENT" = "Production"
     # REMOVIDO: "SECRET_KEY" - não é necessário
   }
 
