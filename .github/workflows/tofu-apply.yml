@@ -1,0 +1,55 @@
+name: Tofu Apply
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'iac/**'
+  workflow_dispatch:
+
+env:
+  TF_VERSION: '1.6.0'
+  WORKING_DIR: './iac'
+
+jobs:
+  tofu-apply:
+    name: 'Tofu Apply'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup OpenTofu
+      uses: opentofu/setup-opentofu@v1
+      with:
+        tofu_version: ${{ env.TF_VERSION }}
+
+    - name: Tofu Init
+      working-directory: ${{ env.WORKING_DIR }}
+      id: init
+      run: tofu init
+      env:
+        ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+    - name: Tofu Plan
+      working-directory: ${{ env.WORKING_DIR }}
+      id: plan
+      run: tofu plan -out=tfplan
+      env:
+        TF_VAR_db_admin_username: ${{ secrets.DB_ADMIN_USERNAME }}
+        TF_VAR_db_admin_password: ${{ secrets.DB_ADMIN_PASSWORD }}
+        TF_VAR_api_key: ${{ secrets.API_KEY }}
+        TF_VAR_location: ${{ env.TF_VAR_location }}
+        ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+    - name: Tofu Apply
+      working-directory: ${{ env.WORKING_DIR }}
+      run: tofu apply -auto-approve tfplan
