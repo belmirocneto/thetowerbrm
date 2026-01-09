@@ -1,0 +1,13 @@
+# Copy this file to terraform.tfvars and fill with your values
+# DO NOT commit terraform.tfvars to git
+
+project_name = "battle-reports"
+environment  = "prod"
+location     = "East US"
+
+# Database credentials
+db_admin_username = "adminuser"
+db_admin_password = "YourSecurePassword123!"
+
+# API authentication
+api_key    = "your-secure-api-key-here"
