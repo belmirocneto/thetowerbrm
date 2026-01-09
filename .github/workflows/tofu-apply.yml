@@ -11,6 +11,7 @@ on:
 env:
   TF_VERSION: '1.6.0'
   WORKING_DIR: './iac'
+  TF_VAR_location: 'Central US'
 
 jobs:
   tofu-apply:
