@@ -7,7 +7,7 @@
       "direction": "in",
       "name": "req",
       "methods": ["get"],
-      "route": "admin/setup-db"
+      "route": "setup"
     },
     {
       "type": "http",

@@ -1,4 +1,14 @@
 import azure.functions as func
+import logging
+import sys
+import os
 
-def main(req: func.HttpRequest) -> func.HttpResponse:
-    return func.HttpResponse("Oi! Eu existo.", status_code=200)
+# Forçar o log a aparecer no Log Stream
+logging.info("Tentando carregar o módulo AdminSetup")
+
+try:
+    from shared.database import engine
+    from shared.models import Base, BattleReport
+    logging.info("Dependências carregadas com sucesso no AdminSetup")
+except Exception as e:
+    logging.error(f"FALHA NO IMPORT DO ADMINSETUP: {str(e)}")
