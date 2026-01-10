@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Upload, Database, TrendingUp, LogOut, Trash2, Globe } from 'lucide-react';
 import { API_CONFIG } from './config';
@@ -114,12 +114,6 @@ export default function BattleReportApp() {
     }
   }, []);
 
-  useEffect(() => {
-    if (isLoggedIn && userId) {
-      fetchReports();
-    }
-  }, [limit, page, isLoggedIn, userId]);
-
   const changeLanguage = (lang) => {
     setLanguage(lang);
     localStorage.setItem('tower_language', lang);
@@ -144,7 +138,7 @@ export default function BattleReportApp() {
     setReports([]);
   };
 
-  const fetchReports = async () => {
+  const fetchReports = useCallback(async () => {
     try {
       const response = await fetch(
         `${API_URL}/reports?user_id=${userId}&limit=${limit}&page=${page}`, {
@@ -159,7 +153,13 @@ export default function BattleReportApp() {
     } catch (error) {
       console.error('Error fetching reports:', error);
     }
-  };
+  }, [userId, limit, page]);
+
+  useEffect(() => {
+    if (isLoggedIn && userId) {
+      fetchReports();
+    }
+  }, [isLoggedIn, userId, fetchReports]);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -170,12 +170,13 @@ export default function BattleReportApp() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-api-key': API_CONFIG.API_KEY
         },
         body: JSON.stringify({ raw_data: rawData, user_id: userId }),
       });
 
       const data = await response.json();
-      
+
       if (response.ok) {
         setMessage(t.reportSaved);
         setRawData('');
@@ -194,6 +195,9 @@ export default function BattleReportApp() {
     try {
       const response = await fetch(`${API_URL}/reports/${reportId}?user_id=${userId}`, {
         method: 'DELETE',
+        headers: {
+          'x-api-key': API_CONFIG.API_KEY
+        }
       });
 
       if (response.ok) {
